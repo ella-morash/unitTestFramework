@@ -1,6 +1,4 @@
-package com.telran;
-
-import java.lang.reflect.InvocationTargetException;
+package com.telran.unittest;
 
 public class Main {
     private final static String className = ToyTest.class.getName();

@@ -1,4 +1,4 @@
-package com.telran;
+package com.telran.unittest;
 
 import com.telran.annotations.*;
 
