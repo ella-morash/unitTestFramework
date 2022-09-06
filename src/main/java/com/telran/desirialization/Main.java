@@ -3,15 +3,16 @@ package com.telran.desirialization;
 public class Main {
 
     public static void main(String[] args) {
-        TestClass testClass = new TestClass();
-        Employee employee = new Employee();
+
+        Employee employee = new Employee("",0.0);
+        TestClass testClass = new TestClass("",employee);
         FileFactory fileFactory = new FileFactory();
         String className = testClass.getClass().getCanonicalName();
         String name = employee.getClass().getCanonicalName();
-        System.out.println(className);
-        fileFactory.readFromFile(className);
+
+        fileFactory.readFromFile(testClass);
         JsonFactory jsonFactory = new JsonFactory();
-        jsonFactory.readFromFile(name);
+        jsonFactory.readFromFile(testClass);
         System.out.println(testClass);
 
     }

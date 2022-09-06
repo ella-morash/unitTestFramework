@@ -19,10 +19,10 @@ public class TestClass {
 
 
 
-    @FileResource(value = "files/data.txt")
+    @FileResource(value = "src/main/java/com/telran/files/data.txt",nullIfError = true)
     private String data;
 
-    @JsonResource(value = "classpath:employee.json",nullIfError = true)
+    @JsonResource(value = "src/main/java/com/telran/files/employee.json",nullIfError = true)
     private Employee employee;
 }
 

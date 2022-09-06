@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 public class XmlFactory {
@@ -15,27 +16,41 @@ public class XmlFactory {
 
 
     @SneakyThrows
-    public void readFromFile(String className) {
+    public void readFromFile(Object object) {
 
-        var instance = Class.forName(className).getDeclaredConstructors()[0];
 
-        Arrays.stream(instance.getClass().getDeclaredFields())
-                .filter(f -> f.isAnnotationPresent(XmlResource.class))
+        Arrays.stream(object.getClass().getDeclaredFields())
+                .filter(f -> f.isAnnotationPresent(JsonResource.class))
                 .forEach(f -> {
+                    Object newObj = null;
                     try {
-                        xmlMapper.readValue(new File(f.getAnnotation(XmlResource.class).value()), instance.getClass());
+                        newObj = f.getType().getConstructor(new Class[]{}).newInstance();
+
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+
+                        var obj = xmlMapper.readValue(new File(f.getAnnotation(JsonResource.class).value()),newObj.getClass());
+
+                        f.setAccessible(true);
+                        try {
+                            f.set(object, obj);
+                        } catch (IllegalAccessException ex) {
+                            ex.printStackTrace();
+                        }
                     } catch (IOException e) {
-                        if (f.getAnnotation(XmlResource.class).nullIfError()) {
+
+                        if (f.getAnnotation(JsonResource.class).nullIfError()) {
                             f.setAccessible(true);
                             try {
-                                f.set(instance, null);
+                                f.set(object, null);
                             } catch (IllegalAccessException ex) {
                                 ex.printStackTrace();
                             }
                         } else {
                             e.printStackTrace();
                         }
-
                     }
 
                 });
